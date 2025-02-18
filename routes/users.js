@@ -6,8 +6,10 @@ router.get('/', function(req, res, next) {
   res.send('respond with a resource');
 });
 
-router.get("/a", function (req, res, next) {
-  res.send("drink water");
+router.get("/wat", function (req, res, next) {
+  res.send(
+    "Csörögefánk are wonderful light as air, crispy, fried dough cookies"
+  );
 });
 
 module.exports = router;

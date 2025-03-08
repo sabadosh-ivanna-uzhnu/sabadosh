@@ -12,4 +12,11 @@ router.get("/wat", function (req, res, next) {
   );
 });
 
+const users = [{ name: "Vasya" }, { name: "Andriy" }, { name: "Tarasik" }];
+
+router.get("/cool-users", (req, res) => {
+  res.render("cool-users", { users });
+});
+
+
 module.exports = router;

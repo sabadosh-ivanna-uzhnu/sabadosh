@@ -1,9 +1,11 @@
 {
-  "name": "myapp",
+  "name": "express-locallibrary-tutorial",
   "version": "0.0.0",
   "private": true,
-  "scripts": {
-    "start": "node ./bin/www"
+   "scripts": {
+    "start": "node ./bin/www",
+    "devstart": "nodemon ./bin/www",
+    "serverstart": "SET DEBUG=express-locallibrary-tutorial:* & npm run devstart"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
@@ -16,6 +18,7 @@
     "mongodb": "^6.14.2",
     "mongoose": "^8.12.1",
     "morgan": "~1.9.1",
+    "nodemon": "^3.1.9",
     "pug": "2.0.0-beta11"
   }
 }

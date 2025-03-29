@@ -1,0 +1,10 @@
+//- cool-users.pug
+extends layout.pug
+
+block content
+  h1 Cool Users
+  p Welcome to the Cool Users page
+  p Below there are a list of cool users:
+  ul
+    each user in users
+      li= user.name

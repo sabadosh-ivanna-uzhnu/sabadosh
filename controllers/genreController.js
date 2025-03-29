@@ -84,20 +84,94 @@ exports.genre_create_post = [
 
 // Display Genre delete form on GET.
 exports.genre_delete_get = asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: Genre delete GET");
+  try {
+    // Find the genre by ID
+    const genre = await Genre.findById(req.params.id);
+
+    // Find all books related to this genre
+    const books = await Book.find({ genre: req.params.id });
+
+    if (!genre) {
+      res.redirect("/catalog/genres");
+      return;
+    }
+
+    // Render the genre delete view, passing genre and books data
+    res.render("genre_delete", {
+      title: "Delete Genre",
+      genre: genre,
+      books: books, // Pass the books related to the genre
+    });
+  } catch (err) {
+    next(err);
+  }
 });
 
 // Handle Genre delete on POST.
 exports.genre_delete_post = asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: Genre delete POST");
+  const [genre, booksInGenre] = await Promise.all([
+    Genre.findById(req.body.genreid).exec(),
+    Book.find({ genre: req.body.genreid }).exec(),
+  ]);
+
+  if (booksInGenre.length > 0) {
+    res.render("genre_delete", {
+      title: "Delete Genre",
+      genre: genre,
+      genre_books: booksInGenre,
+    });
+    return;
+  } else {
+    await Genre.findByIdAndDelete(req.body.genreid);
+    res.redirect("/catalog/genres");
+  }
 });
 
 // Display Genre update form on GET.
 exports.genre_update_get = asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: Genre update GET");
+  const genre = await Genre.findById(req.params.id).exec();
+
+  if (genre === null) {
+    const err = new Error("Genre not found");
+    err.status = 404;
+    return next(err);
+  }
+
+  res.render("genre_form", {
+    title: "Update Genre",
+    genre: genre,
+  });
 });
 
 // Handle Genre update on POST.
-exports.genre_update_post = asyncHandler(async (req, res, next) => {
-  res.send("NOT IMPLEMENTED: Genre update POST");
-});
+exports.genre_update_post = [
+  body("name", "Genre name must contain at least 3 characters")
+    .trim()
+    .isLength({ min: 3 })
+    .escape(),
+
+  asyncHandler(async (req, res, next) => {
+    const errors = validationResult(req);
+
+    const genre = new Genre({
+      _id: req.params.id,
+      name: req.body.name,
+    });
+
+    if (!errors.isEmpty()) {
+      res.render("genre_form", {
+        title: "Update Genre",
+        genre: genre,
+        errors: errors.array(),
+      });
+      return;
+    }
+
+    const updatedGenre = await Genre.findByIdAndUpdate(
+      req.params.id,
+      genre,
+      {}
+    );
+    res.redirect(updatedGenre.url);
+  }),
+];

@@ -1,19 +1,14 @@
 const Genre = require("../models/genre");
 const asyncHandler = require("express-async-handler");
-const Book = require("../models/book")
+const Book = require("../models/book");
 const { body, validationResult } = require("express-validator");
 
 // Display list of all Genre.
 exports.genre_list = asyncHandler(async (req, res, next) => {
-  try {
-    const genre_list = await Genre.find().sort({ name: 1 }).exec();
-    res.render("genre_list", {
-      title: "Genre List",
-      genre_list: genre_list,
-    });
-  } catch (err) {
-    return next(err);
-  }
+  const allGenre = await Genre.find().sort({ name: 1 }).exec();
+  res.json({
+    genre_list: allGenre,
+  });
 });
 
 // Display detail page for a specific Genre.
@@ -30,8 +25,7 @@ exports.genre_detail = asyncHandler(async (req, res, next) => {
     return next(err);
   }
 
-  res.render("genre_detail", {
-    title: "Genre Detail",
+  res.json({
     genre: genre,
     genre_books: booksInGenre,
   });
@@ -39,11 +33,19 @@ exports.genre_detail = asyncHandler(async (req, res, next) => {
 
 // Display Genre create form on GET.
 exports.genre_create_get = (req, res, next) => {
-  res.render("genre_form", { title: "Create Genre" });
+  res.json({
+    fields: {
+      name: {
+        type: "text",
+        required: true,
+        placeholder: "Enter genre name",
+      },
+    },
+  });
 };
 
 // Handle Genre create on POST.
-exports.genre_create_post = [
+exports.genre_create = [
   // Validate and sanitize the name field.
   body("name", "Genre name must contain at least 3 characters")
     .trim()
@@ -60,8 +62,7 @@ exports.genre_create_post = [
 
     if (!errors.isEmpty()) {
       // There are errors. Render the form again with sanitized values/error messages.
-      res.render("genre_form", {
-        title: "Create Genre",
+      res.json({
         genre: genre,
         errors: errors.array(),
       });
@@ -84,45 +85,37 @@ exports.genre_create_post = [
 
 // Display Genre delete form on GET.
 exports.genre_delete_get = asyncHandler(async (req, res, next) => {
-  try {
-    // Find the genre by ID
-    const genre = await Genre.findById(req.params.id);
+  const [genre, booksInGenre] = await Promise.all([
+    Genre.findById(req.params.id).exec(),
+    Book.find({ genre: req.params.id }).exec(),
+  ]);
 
-    // Find all books related to this genre
-    const books = await Book.find({ genre: req.params.id });
-
-    if (!genre) {
-      res.redirect("/catalog/genres");
-      return;
-    }
-
-    // Render the genre delete view, passing genre and books data
-    res.render("genre_delete", {
-      title: "Delete Genre",
-      genre: genre,
-      books: books, // Pass the books related to the genre
-    });
-  } catch (err) {
-    next(err);
+  if (genre === null) {
+    res.redirect("/catalog/genre");
   }
+
+  res.json({
+    genre: genre,
+    genre_books: booksInGenre,
+  });
 });
 
 // Handle Genre delete on POST.
-exports.genre_delete_post = asyncHandler(async (req, res, next) => {
+exports.genre_delete = asyncHandler(async (req, res, next) => {
+  const genreId = req.params.id;
   const [genre, booksInGenre] = await Promise.all([
-    Genre.findById(req.body.genreid).exec(),
-    Book.find({ genre: req.body.genreid }).exec(),
+    Genre.findById(genreId).exec(),
+    Book.find({ genre: genreId }).exec(),
   ]);
 
   if (booksInGenre.length > 0) {
-    res.render("genre_delete", {
-      title: "Delete Genre",
+    res.json({
       genre: genre,
       genre_books: booksInGenre,
     });
     return;
   } else {
-    await Genre.findByIdAndDelete(req.body.genreid);
+    await Genre.findByIdAndDelete(genreId);
     res.redirect("/catalog/genres");
   }
 });
@@ -137,14 +130,13 @@ exports.genre_update_get = asyncHandler(async (req, res, next) => {
     return next(err);
   }
 
-  res.render("genre_form", {
-    title: "Update Genre",
+  res.json({
     genre: genre,
   });
 });
 
 // Handle Genre update on POST.
-exports.genre_update_post = [
+exports.genre_update = [
   body("name", "Genre name must contain at least 3 characters")
     .trim()
     .isLength({ min: 3 })
@@ -159,8 +151,7 @@ exports.genre_update_post = [
     });
 
     if (!errors.isEmpty()) {
-      res.render("genre_form", {
-        title: "Update Genre",
+      res.json({
         genre: genre,
         errors: errors.array(),
       });

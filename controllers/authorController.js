@@ -6,8 +6,7 @@ const { body, validationResult } = require("express-validator");
 // Display list of all Authors.
 exports.author_list = asyncHandler(async (req, res, next) => {
   const allAuthors = await Author.find().sort({ family_name: 1 }).exec();
-  res.render("author_list", {
-    title: "Author List",
+  res.json({
     author_list: allAuthors,
   });
 });
@@ -27,8 +26,7 @@ exports.author_detail = asyncHandler(async (req, res, next) => {
     return next(err);
   }
 
-  res.render("author_detail", {
-    title: "Author Detail",
+  res.json({
     author: author,
     author_books: allBooksByAuthor,
   });
@@ -36,11 +34,41 @@ exports.author_detail = asyncHandler(async (req, res, next) => {
 
 // Display Author create form on GET.
 exports.author_create_get = (req, res, next) => {
-  res.render("author_form", { title: "Create Author" });
+  res.json({
+    fields: {
+      first_name: {
+        type: "text",
+        label: "First Name",
+        required: true,
+        placeholder: "Enter first name",
+      },
+      family_name: {
+        type: "text",
+        label: "Family Name",
+        required: true,
+        placeholder: "Enter family name",
+      },
+      date_of_birth: {
+        type: "date",
+        label: "Date of birth",
+        required: false,
+      },
+      date_of_death: {
+        type: "date",
+        label: "Date of death",
+        required: false,
+      },
+    },
+    submit: {
+      label: "Submit",
+      method: "POST",
+      endpoint: "/catalog/authors",
+    },
+  });
 };
 
 // Handle Author create on POST.
-exports.author_create_post = [
+exports.author_create = [
   // Validate and sanitize fields.
   body("first_name")
     .trim()
@@ -80,8 +108,7 @@ exports.author_create_post = [
 
     if (!errors.isEmpty()) {
       // There are errors. Render form again with sanitized values/errors messages.
-      res.render("author_form", {
-        title: "Create Author",
+      res.json({
         author: author,
         errors: errors.array(),
       });
@@ -110,16 +137,14 @@ exports.author_delete_get = asyncHandler(async (req, res, next) => {
     res.redirect("/catalog/authors");
   }
 
-  res.render("author_delete", {
-    title: "Delete Author",
+  res.json({
     author: author,
     author_books: allBooksByAuthor,
   });
 });
 
-
 // Handle Author delete on POST.
-exports.author_delete_post = asyncHandler(async (req, res, next) => {
+exports.author_delete = asyncHandler(async (req, res, next) => {
   // Get details of author and all their books (in parallel)
   const [author, allBooksByAuthor] = await Promise.all([
     Author.findById(req.params.id).exec(),
@@ -128,8 +153,7 @@ exports.author_delete_post = asyncHandler(async (req, res, next) => {
 
   if (allBooksByAuthor.length > 0) {
     // Author has books. Render in same way as for GET route.
-    res.render("author_delete", {
-      title: "Delete Author",
+    res.json({
       author: author,
       author_books: allBooksByAuthor,
     });
@@ -152,14 +176,13 @@ exports.author_update_get = asyncHandler(async (req, res, next) => {
     return next(err);
   }
 
-  res.render("author_form", {
-    title: "Update Author",
+  res.json({
     author: author,
   });
 });
 
 // Handle Author update on POST.
-exports.author_update_post = [
+exports.author_update = [
   // Validate and sanitize fields.
   body("first_name")
     .trim()
@@ -196,8 +219,7 @@ exports.author_update_post = [
     });
 
     if (!errors.isEmpty()) {
-      res.render("author_form", {
-        title: "Update Author",
+      res.json({
         author: author,
         errors: errors.array(),
       });

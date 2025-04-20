@@ -30,15 +30,6 @@ exports.bookinstance_detail = asyncHandler(async (req, res, next) => {
   });
 });
 
-// Display BookInstance create form on GET.
-exports.bookinstance_create_get = asyncHandler(async (req, res, next) => {
-  const allBooks = await Book.find({}, "title").sort({ title: 1 }).exec();
-
-  res.json({
-    book_list: allBooks,
-  });
-});
-
 // Handle BookInstance create on POST.
 exports.bookinstance_create = [
   // Validate and sanitize fields.
@@ -52,7 +43,6 @@ exports.bookinstance_create = [
     .optional({ values: "falsy" })
     .isISO8601()
     .toDate(),
-
   // Process request after validation and sanitization.
   asyncHandler(async (req, res, next) => {
     // Extract the validation errors from a request.
@@ -72,7 +62,6 @@ exports.bookinstance_create = [
       const allBooks = await Book.find({}, "title").sort({ title: 1 }).exec();
 
       res.json({
-        title: "Create BookInstance",
         book_list: allBooks,
         selected_book: bookInstance._id,
         errors: errors.array(),
@@ -83,57 +72,17 @@ exports.bookinstance_create = [
       // Data from form is valid
       await bookInstance.save();
       res.redirect(bookInstance.url);
+
       res.json({
         message: "Book instance created successfully",
         bookinstance: bookInstance,
       });
+      
     }
   }),
 ];
 
-// Display BookInstance delete form on GET.
-exports.bookinstance_delete_get = asyncHandler(async (req, res, next) => {
-  const bookInstance = await BookInstance.findById(req.params.id)
-    .populate("book")
-    .exec();
-
-  if (!bookInstance) {
-    res.redirect("/catalog/bookinstances");
-    return;
-  }
-
-  res.json({
-    bookinstance: bookInstance,
-  });
-});
-
-// Handle BookInstance delete on POST.
-exports.bookinstance_delete = asyncHandler(async (req, res, next) => {
-  await BookInstance.findByIdAndDelete(req.params.id);
-  res.json({ message: "BookInstance deleted successfully" });
-});
-
-// Display BookInstance update form on GET.
-exports.bookinstance_update_get = asyncHandler(async (req, res, next) => {
-  const [bookInstance, allBooks] = await Promise.all([
-    BookInstance.findById(req.params.id).populate("book").exec(),
-    Book.find({}, "title").sort({ title: 1 }).exec(),
-  ]);
-
-  if (bookInstance === null) {
-    const err = new Error("BookInstance not found");
-    err.status = 404;
-    return next(err);
-  }
-
-  res.json({
-    book_list: allBooks,
-    selected_book: bookInstance._id,
-    bookinstance: bookInstance,
-  });
-});
-
-// Handle bookinstance update on POST.
+// Handle BookInstance update on POST.
 exports.bookinstance_update = [
   body("book", "Book must be specified").trim().isLength({ min: 1 }).escape(),
   body("imprint", "Imprint must be specified")
@@ -150,7 +99,7 @@ exports.bookinstance_update = [
     const errors = validationResult(req);
 
     const bookInstance = new BookInstance({
-      _id: req.params.id,
+      _id: req.params.id, 
       book: req.body.book,
       imprint: req.body.imprint,
       status: req.body.status,
@@ -173,23 +122,17 @@ exports.bookinstance_update = [
   }),
 ];
 
-// Handle BookInstance status update on POST
-exports.bookinstance_update_status_post = asyncHandler(async (req, res, next) => {
-  const bookInstanceId = req.params.id;
-  const newStatus = req.body.status;
+// Handle BookInstance delete on POST.
+exports.bookinstance_delete = asyncHandler(async (req, res, next) => {
+  await BookInstance.findByIdAndDelete(req.params.id);
+  res.json({ message: "BookInstance deleted successfully" });
+});
 
-  try {
-    const bookInstance = await BookInstance.findById(bookInstanceId);
+// Display BookInstance create form on GET.
+exports.bookinstance_create_form = asyncHandler(async (req, res, next) => {
+  const allBooks = await Book.find({}, "title").sort({ title: 1 }).exec();
 
-    if (!bookInstance) {
-      return res.redirect('/catalog/bookinstances');
-    }
-
-    bookInstance.status = newStatus;
-    await bookInstance.save();
-
-    res.redirect('/catalog/bookinstance/' + bookInstanceId);  // Redirect to book instance detail page
-  } catch (err) {
-    next(err);
-  }
+  res.json({
+    book_list: allBooks,
+  });
 });

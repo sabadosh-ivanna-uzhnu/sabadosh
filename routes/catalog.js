@@ -51,8 +51,8 @@ router.get("/genrescreateform", genre_controller.genre_create_form);
 router.get("/bookinstances", book_instance_controller.bookinstance_list);
 router.get("/bookinstances/:id", book_instance_controller.bookinstance_detail);
 router.post("/bookinstances",book_instance_controller.bookinstance_create,);
-router.put("/bookinstances/:id/update",book_instance_controller.bookinstance_update,);
-router.delete("/bookinstances/:id/delete",book_instance_controller.bookinstance_delete,);
+router.put("/bookinstances/:id", book_instance_controller.bookinstance_update);
+router.delete("/bookinstances/:id", book_instance_controller.bookinstance_delete);
 
 // BOOKINSTANCE Helpers
 router.get("/bookinstancescreateform",book_instance_controller.bookinstance_create_form,);

@@ -43,6 +43,7 @@ exports.bookinstance_create = [
     .optional({ values: "falsy" })
     .isISO8601()
     .toDate(),
+  
   // Process request after validation and sanitization.
   asyncHandler(async (req, res, next) => {
     // Extract the validation errors from a request.
@@ -58,26 +59,24 @@ exports.bookinstance_create = [
 
     if (!errors.isEmpty()) {
       // There are errors.
-      // Render form again with sanitized values and error messages.
+      // Return errors with the list of all books and selected book in JSON format.
       const allBooks = await Book.find({}, "title").sort({ title: 1 }).exec();
 
-      res.json({
+      return res.json({
         book_list: allBooks,
         selected_book: bookInstance._id,
         errors: errors.array(),
         bookinstance: bookInstance,
       });
-      return;
     } else {
       // Data from form is valid
       await bookInstance.save();
-      res.redirect(bookInstance.url);
 
-      res.json({
+      // Return success message and the created book instance in JSON format
+      return res.json({
         message: "Book instance created successfully",
         bookinstance: bookInstance,
       });
-      
     }
   }),
 ];
@@ -98,35 +97,55 @@ exports.bookinstance_update = [
   asyncHandler(async (req, res, next) => {
     const errors = validationResult(req);
 
-    const bookInstance = new BookInstance({
-      _id: req.params.id, 
+    const updatedData = {
       book: req.body.book,
       imprint: req.body.imprint,
       status: req.body.status,
       due_back: req.body.due_back,
-    });
+    };
 
     if (!errors.isEmpty()) {
       const allBooks = await Book.find({}, "title").sort({ title: 1 }).exec();
-      res.json({
+      res.status(400).json({
         book_list: allBooks,
-        selected_book: bookInstance._id,
-        bookinstance: bookInstance,
         errors: errors.array(),
+        bookinstance: updatedData,
       });
       return;
     } else {
-      await BookInstance.findByIdAndUpdate(req.params.id, bookInstance);
-      res.redirect(bookInstance.url);
+      const updatedBookInstance = await BookInstance.findByIdAndUpdate(
+        req.params.id,
+        updatedData,
+        { new: true }
+      );
+
+      if (!updatedBookInstance) {
+        return res
+          .status(404)
+          .json({ status: 404, message: "BookInstance not found" });
+      }
+
+      res.json({
+        message: "Book instance updated successfully",
+        bookinstance: updatedBookInstance,
+      });
     }
   }),
 ];
 
 // Handle BookInstance delete on POST.
 exports.bookinstance_delete = asyncHandler(async (req, res, next) => {
-  await BookInstance.findByIdAndDelete(req.params.id);
+  const bookInstance = await BookInstance.findByIdAndDelete(req.params.id);
+
+  if (!bookInstance) {
+    return res
+      .status(404)
+      .json({ status: 404, message: "BookInstance not found" });
+  }
+
   res.json({ message: "BookInstance deleted successfully" });
 });
+
 
 // Display BookInstance create form on GET.
 exports.bookinstance_create_form = asyncHandler(async (req, res, next) => {

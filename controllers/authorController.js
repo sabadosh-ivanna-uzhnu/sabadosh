@@ -11,7 +11,6 @@ exports.author_list = asyncHandler(async (req, res, next) => {
   });
 });
 
-
 // Display detail page for a specific Author.
 exports.author_detail = asyncHandler(async (req, res, next) => {
   // Get details of author and all their books (in parallel)
@@ -32,7 +31,6 @@ exports.author_detail = asyncHandler(async (req, res, next) => {
     author_books: allBooksByAuthor,
   });
 });
-
 
 // Handle Author create on POST.
 exports.author_create = [
@@ -143,23 +141,23 @@ exports.author_update = [
 
 // Handle Author delete on POST.
 exports.author_delete = asyncHandler(async (req, res, next) => {
-  // Get details of author and all their books (in parallel)
-  const [author, allBooksByAuthor] = await Promise.all([
-    Author.findById(req.params.id).exec(),
-    Book.find({ author: req.params.id }, "title summary").exec(),
-  ]);
+  const author = await Author.findById(req.params.id).exec();
+  if (!author) {
+    return res.status(404).json({ message: "Author not found" });
+  }
+
+  const allBooksByAuthor = await Book.find({ author: req.params.id }, "title summary").exec();
 
   if (allBooksByAuthor.length > 0) {
-    // Author has books. Render in same way as for GET route.
-    res.json({
+    // Author has books. Return author details and books.
+    return res.json({
       author: author,
       author_books: allBooksByAuthor,
     });
-    return;
   } else {
-    // Author has no books. Delete object and redirect to the list of authors.
-    await Author.findByIdAndDelete(req.body.authorid);
-    res.redirect("/catalog/authors");
+    // Author has no books. Delete author and return success message.
+    await Author.findByIdAndDelete(req.params.id);
+    return res.json({ message: "Author deleted successfully" });
   }
 });
 

@@ -33,37 +33,36 @@ exports.genre_detail = asyncHandler(async (req, res, next) => {
 
 // Handle Genre create on POST.
 exports.genre_create = [
-  // Validate and sanitize the name field.
   body("name", "Genre name must contain at least 3 characters")
     .trim()
     .isLength({ min: 3 })
     .escape(),
-  // Process request after validation and sanitization.
+
   asyncHandler(async (req, res, next) => {
-    // Extract the validation errors from a request.
     const errors = validationResult(req);
 
-    // Create a genre object with escaped and trimmed data.
     const genre = new Genre({ name: req.body.name });
 
     if (!errors.isEmpty()) {
-      // There are errors. Render the form again with sanitized values/error messages.
-      res.json({
-        genre: genre,
+      res.status(400).json({
+        message: "Validation failed",
         errors: errors.array(),
+        genre: genre,
       });
       return;
     } else {
-      // Data from form is valid.
-      // Check if Genre with same name already exists.
       const genreExists = await Genre.findOne({ name: req.body.name }).exec();
       if (genreExists) {
-        // Genre exists, redirect to its detail page.
-        res.redirect(genreExists.url);
+        res.status(200).json({
+          message: "Genre already exists",
+          genre: genreExists,
+        });
       } else {
         await genre.save();
-        // New genre saved. Redirect to genre detail page.
-        res.redirect(genre.url);
+        res.status(201).json({
+          message: "Genre created successfully",
+          genre: genre,
+        });
       }
     }
   }),
@@ -78,54 +77,64 @@ exports.genre_update = [
 
   asyncHandler(async (req, res, next) => {
     const errors = validationResult(req);
-    
-    const genre = new Genre({
-      _id: req.params.id,
+
+    const genre = {
       name: req.body.name,
-    });
+    };
 
     if (!errors.isEmpty()) {
-      res.json({
-        genre: genre,
+      res.status(400).json({
         errors: errors.array(),
       });
       return;
     }
 
-    const updatedGenre = await Genre.findByIdAndUpdate(req.params.id, genre, {});
-    res.redirect(updatedGenre.url);
+    const updatedGenre = await Genre.findByIdAndUpdate(req.params.id, genre, {
+      new: true,
+    });
+
+    if (!updatedGenre) {
+      res.status(404).json({ status: 404, message: "Genre not found" });
+      return;
+    }
+
+    res.json({
+      message: "Genre updated successfully",
+      genre: updatedGenre,
+    });
   }),
 ];
 
 // Handle Genre delete on POST.
 exports.genre_delete = asyncHandler(async (req, res, next) => {
   const genreId = req.params.id;
+
   const [genre, booksInGenre] = await Promise.all([
-  Genre.findById(genreId).exec(),
-  Book.find({ genre: genreId }).exec(),
-]);
+    Genre.findById(genreId).exec(),
+    Book.find({ genre: genreId }).exec(),
+  ]);
+
+  if (!genre) {
+    res.status(404).json({ status: 404, message: "Genre not found" });
+    return;
+  }
 
   if (booksInGenre.length > 0) {
-    res.json({
+    res.status(400).json({
+      message: "Cannot delete genre with associated books",
       genre: genre,
       genre_books: booksInGenre,
     });
     return;
-  } else {
-    await Genre.findByIdAndDelete(genreId);
-    res.redirect("/catalog/genres");
   }
+
+  await Genre.findByIdAndDelete(genreId);
+  res.json({ message: "Genre deleted successfully" });
 });
 
 // Display Genre create form on GET.
-exports.genre_create_form = (req, res, next) => {
-  res.json({
-    fields: {
-      name: {
-        type: "text",
-        required: true,
-        placeholder: "Enter genre name",
-      },
-    },
-  });
-};  
+exports.genre_create_form = asyncHandler(async (req, res, next) => {
+  const allGenres = await Genre.find().sort({ name: 1 }).exec();
+
+  res.json({ genre_list: allGenres });
+});

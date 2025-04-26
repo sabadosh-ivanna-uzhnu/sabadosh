@@ -40,13 +40,101 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{URL}}/books/67cd4120d6e3357597244522",
+							"raw": "{{URL}}/books/68029b393f1c8232df3c2696",
 							"host": [
 								"{{URL}}"
 							],
 							"path": [
 								"books",
-								"67cd4120d6e3357597244522"
+								"68029b393f1c8232df3c2696"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Book Create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Test Postman Book\",\r\n    \"author\": \"{{Test_Author}}\",\r\n    \"summary\": \"Humankind headed\",\r\n    \"isbn\": \"9780765379528\",\r\n    \"genre\": [\r\n        \"67cd411fd6e335759724450f\",\r\n        \"67cd411fd6e3357597244511\"\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/books",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"books"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Book Update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Test Postman Book 2\",\r\n    \"author\": \"{{Test_Author}}\",\r\n    \"summary\": \"Humankind headed 345\",\r\n    \"isbn\": \"9780765379528qwe\",\r\n    \"genre\": [\r\n        \"67cd411fd6e335759724450f\"\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/books/680cd79f27a02cf18fc0d43f",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"books",
+								"680cd79f27a02cf18fc0d43f"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Book Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/books/680cd79f27a02cf18fc0d43f",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"books",
+								"680cd79f27a02cf18fc0d43f"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Book Create Form",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/bookscreateform",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"bookscreateform"
 							]
 						}
 					},
@@ -80,13 +168,101 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{URL}}/authors/67cd4120d6e3357597244517",
+							"raw": "{{URL}}/authors/680ccaf536b1d57d8b904542",
 							"host": [
 								"{{URL}}"
 							],
 							"path": [
 								"authors",
-								"67cd4120d6e3357597244517"
+								"680ccaf536b1d57d8b904542"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Author Create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"first_name\": \"Isaac\",\r\n  \"family_name\": \"Asimov\",\r\n  \"date_of_birth\": \"1920-01-02\",\r\n  \"date_of_death\": \"1992-04-06\",\r\n  \"__v\": 0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/authors",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"authors"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Author Update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"first_name\": \"Isaac 2\",\r\n  \"family_name\": \"Asimovasd\",\r\n  \"date_of_birth\": \"1920-01-02\",\r\n  \"date_of_death\": \"1992-04-06\",\r\n  \"__v\": 0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/authors/680ca39016ba8cab2766dd6f",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"authors",
+								"680ca39016ba8cab2766dd6f"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Author Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/authors/680ccaf536b1d57d8b904542",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"authors",
+								"680ccaf536b1d57d8b904542"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Author Create Form",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/authorscreateform",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"authorscreateform"
 							]
 						}
 					},
@@ -120,13 +296,101 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{URL}}/bookinstances/67cd4121d6e335759724452f",
+							"raw": "{{URL}}/bookinstances/680cc4eee7c73a3298c5a712",
 							"host": [
 								"{{URL}}"
 							],
 							"path": [
 								"bookinstances",
-								"67cd4121d6e335759724452f"
+								"680cc4eee7c73a3298c5a712"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Bookinstance Create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"book\": \"67cd4120d6e3357597244521\",\r\n  \"imprint\": \"Gollancz 222, 2015.\",\r\n  \"status\": \"Available\",\r\n  \"due_back\": \"2025-03-09\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/bookinstances",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"bookinstances"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Bookinsnatce Update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"book\": \"67cd4120d6e3357597244521\",\r\n  \"imprint\": \"Gollancz 222444, 2015.\",\r\n  \"status\": \"Maintenance\",\r\n  \"due_back\": \"2025-03-09\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/bookinstances/680cc4eee7c73a3298c5a712",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"bookinstances",
+								"680cc4eee7c73a3298c5a712"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Bookinstance Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/bookinstances/680cc4eee7c73a3298c5a712",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"bookinstances",
+								"680cc4eee7c73a3298c5a712"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Bookinstance Create Form",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/bookinstancescreateform",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"bookinstancescreateform"
 							]
 						}
 					},
@@ -160,13 +424,101 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{URL}}/genres/67cd411fd6e335759724450f",
+							"raw": "{{URL}}/genres/680cd2856f457d1efe002fc1",
 							"host": [
 								"{{URL}}"
 							],
 							"path": [
 								"genres",
-								"67cd411fd6e335759724450f"
+								"680cd2856f457d1efe002fc1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Genre Create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Science Fiction 11111234\",\r\n  \"description\": \"A genre of speculative fiction\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/genres",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"genres"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Genre Update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Science Fiction 111112aaaaaaaa34\",\r\n  \"description\": \"A genre of speculative fiction\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/genres/680cd43e2cd76bc9044d7a8d",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"genres",
+								"680cd43e2cd76bc9044d7a8d"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Genre Delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/genres/680cd43e2cd76bc9044d7a8d",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"genres",
+								"680cd43e2cd76bc9044d7a8d"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Genre Create Form",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/genrescreateform",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"genrescreateform"
 							]
 						}
 					},
@@ -215,6 +567,26 @@
 		{
 			"key": "URL",
 			"value": "http://localhost:3000/catalog",
+			"type": "string"
+		},
+		{
+			"key": "Test_book",
+			"value": "67cd4120d6e3357597244522",
+			"type": "string"
+		},
+		{
+			"key": "Test_Author",
+			"value": "67cd4120d6e3357597244518",
+			"type": "string"
+		},
+		{
+			"key": "Test_Bookinstance",
+			"value": "67cd4121d6e335759724452f",
+			"type": "string"
+		},
+		{
+			"key": "Test_Genre",
+			"value": "67cd411fd6e335759724450f",
 			"type": "string"
 		}
 	]

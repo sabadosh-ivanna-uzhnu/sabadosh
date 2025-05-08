@@ -1,0 +1,305 @@
+/* ==== RESET ==== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ==== ОСНОВНЕ ТІЛО ==== */
+body {
+  background: linear-gradient(145deg, #2b2d2f, #1e2023);
+  font-family: 'Segoe UI', sans-serif;
+  color: #e0e0e0;
+  min-height: 100vh;
+}
+
+/* ==== МОДАЛЬНІ ВІКНА ==== */
+#bookCreationModal,
+#authorCreationModal,
+#genreCreationModal,
+#bookInstanceCreationModal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(8px);
+}
+
+/* ==== МОДАЛЬНИЙ КОНТЕНТ ==== */
+#modalContent {
+  background: linear-gradient(135deg, rgba(38, 40, 50, 0.9), rgba(25, 27, 36, 0.95));
+  margin: 6% auto;
+  padding: 25px;
+  border-radius: 16px;
+  width: 40%;
+  max-width: 600px;
+  color: #fff;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+  position: relative;
+  animation: fadeInModal 0.4s ease;
+}
+
+/* ==== Анімація модального вікна ==== */
+@keyframes fadeInModal {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+#closeButton {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 26px;
+  font-weight: bold;
+  cursor: pointer;
+  color: #aaa;
+  transition: color 0.3s ease;
+}
+#closeButton:hover {
+  color: #fff;
+}
+
+/* ==== ФОРМИ ==== */
+.modal-form label {
+  font-weight: 600;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.modal-form input,
+.modal-form select,
+.modal-form textarea {
+  width: 100%;
+  padding: 10px;
+  margin-top: 6px;
+  margin-bottom: 16px;
+  border-radius: 8px;
+  border: 1px solid #444;
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+  transition: border 0.3s, box-shadow 0.3s;
+}
+
+.modal-form input:focus,
+.modal-form select:focus,
+.modal-form textarea:focus {
+  outline: none;
+  border-color: #e91e63;
+  box-shadow: 0 0 8px #e91e63;
+}
+
+/* ==== ЧЕКБОКСИ ==== */
+#genreCheckboxes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.checkbox-label {
+  background: linear-gradient(135deg, #9c27b0, #d500f9);
+  padding: 8px 12px;
+  border-radius: 8px;
+  color: #fff;
+  border: 1px solid #9c27b0;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.checkbox-label:hover {
+  background: linear-gradient(135deg, #c2185b, #8e24aa);
+}
+
+/* ==== ТОСТ ==== */
+.toast {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, #f44336, #d32f2f);
+  color: white;
+  padding: 12px 20px;
+  border-radius: 8px;
+  opacity: 0;
+  transition: opacity 0.4s ease-in-out;
+  z-index: 2000;
+}
+
+.toast.show {
+  opacity: 1;
+}
+
+/* ==== HEADER ==== */
+header {
+  background: linear-gradient(135deg, #2732b0, #f90027);
+  padding: 30px 0;
+  color: #fff;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+
+header h1 {
+  font-size: 36px;
+  margin-bottom: 12px;
+}
+body h1{
+  text-align: center;
+}
+
+/* ==== КНОПКИ СТВОРЕННЯ ==== */
+#createBookButton,
+#createAuthorButton,
+#createGenreButton,
+#createBookInstanceButton {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 12px 24px;
+  font-size: 16px;
+  background: linear-gradient(135deg, #ff5722, #ff1744);
+  border: none;
+  border-radius: 30px;
+  color: #1e1f26;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+#createBookButton:hover,
+#createAuthorButton:hover,
+#createGenreButton:hover,
+#createBookInstanceButton:hover {
+  background: linear-gradient(135deg, #f44336, #d32f2f);
+}
+
+/* ==== НАВІГАЦІЯ ==== */
+nav {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+nav a {
+  background: linear-gradient(135deg, #9c27b0, #d500f9);
+  padding: 10px 18px;
+  border-radius: 20px;
+  color: white;
+  text-decoration: none;
+  transition: background 0.3s ease;
+}
+
+nav a:hover {
+  background: linear-gradient(135deg, #c2185b, #8e24aa);
+}
+
+/* ==== ВИВІД СУТНОСТЕЙ ==== */
+.book, .author, .genre, .book-instance {
+  background: rgba(255, 255, 255, 0.04);
+  padding: 18px;
+  border-radius: 12px;
+  margin: 10px;
+  color: #f0f0f0;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  backdrop-filter: blur(4px);
+}
+
+.book:hover,
+.author:hover,
+.genre:hover,
+.book-instance:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.3);
+}
+
+#bookContainer,
+#authorContainer,
+#genreContainer,
+#bookInstanceContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}
+
+/* ==== КНОПКИ ДІЙ ==== */
+.book button,
+.author button,
+.genre button,
+.book-instance button {
+  display: inline-flex; 
+  margin: 0 10px; 
+  padding: 10px 16px;
+  font-size: 14px;
+  background: linear-gradient(135deg, #ff1744, #e91e63);
+  border: none;
+  border-radius: 22px;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.book,
+.author,
+.genre,
+.book-instance {
+  text-align: center; 
+}
+.book button:hover,
+.author button:hover,
+.genre button:hover,
+.book-instance button:hover {
+  background: linear-gradient(135deg, #d500f9, #9c27b0);
+}
+
+/* ==== КНОПКИ У ФОРМАХ ==== */
+.modal-button {
+  display: inline-block;
+  width: 100%;
+  padding: 12px 20px;
+  font-size: 16px;
+  font-weight: 600;
+  background: linear-gradient(135deg, #ff5722, #ff1744);
+  border: none;
+  border-radius: 30px;
+  color: #1e1f26;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 201, 255, 0.3);
+  text-align: center;
+  margin-top: 12px;
+}
+
+.modal-button:hover {
+  background: linear-gradient(135deg, #f44336, #d32f2f);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 201, 255, 0.4);
+}
+
+.modal-button:active {
+  transform: translateY(1px);
+  box-shadow: 0 3px 8px rgba(0, 201, 255, 0.2);
+}
+
+/* ==== КНОПКА Cancel ==== */
+.modal-button.cancel {
+  background: linear-gradient(135deg, #ef5350, #e53935);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(229, 57, 53, 0.3);
+}
+
+.modal-button.cancel:hover {
+  background: linear-gradient(135deg, #d32f2f, #c62828);
+  box-shadow: 0 6px 16px rgba(229, 57, 53, 0.4);
+}
+
+/* ==== ТЕКСТ ==== */
+.text-content {
+  text-align: center;
+  font-size: 18px;
+  color: #ddd;
+}

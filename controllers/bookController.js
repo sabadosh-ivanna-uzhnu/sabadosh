@@ -2,9 +2,9 @@ const Book = require("../models/book");
 const Author = require("../models/author");
 const Genre = require("../models/genre");
 const BookInstance = require("../models/bookinstance");
+const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
 
-const asyncHandler = require("express-async-handler");
 
 exports.index = asyncHandler(async (req, res, next) => {
   // Get details of books, book instances, authors and genre counts (in parallel)
@@ -31,6 +31,7 @@ exports.index = asyncHandler(async (req, res, next) => {
   });
 });
 
+
 // Display list of all books.
 exports.book_list = asyncHandler(async (req, res, next) => {
   const allBooks = await Book.find()
@@ -38,9 +39,10 @@ exports.book_list = asyncHandler(async (req, res, next) => {
     .populate("author")
     .populate("genre")
     .exec();
-
+  // res.render("book_list", { title: "Book List", book_list: allBooks });
   res.json({ book_list: allBooks });
 });
+
 
 // Display detail page for a specific book.
 exports.book_detail = asyncHandler(async (req, res, next) => {
@@ -56,17 +58,18 @@ exports.book_detail = asyncHandler(async (req, res, next) => {
     err.status = 404;
     return next(err);
   }
-
   res.json({
     book: book,
     book_instances: bookInstances,
   });
 });
 
+
 // Handle book create on POST.
-exports.book_create_post = [
+exports.book_create = [
   // Convert the genre to an array.
   (req, res, next) => {
+    console.log(req.body);
     if (!Array.isArray(req.body.genre)) {
       req.body.genre =
         typeof req.body.genre === "undefined" ? [] : [req.body.genre];
@@ -94,7 +97,6 @@ exports.book_create_post = [
   asyncHandler(async (req, res, next) => {
     // Extract the validation errors from a request.
     const errors = validationResult(req);
-
     // Create a Book object with escaped and trimmed data.
     const book = new Book({
       title: req.body.title,
@@ -105,19 +107,22 @@ exports.book_create_post = [
     });
 
     if (!errors.isEmpty()) {
+      // There are errors. Render form again with sanitized values/error messages.
       res.json({
         errors: errors.array(),
         book: book,
       });
     } else {
+      // Data from form is valid. Save book.
       const success = await book.save();
       res.json(success);
     }
   }),
 ];
 
-// Handle book update on POST.
-exports.book_update_post = [
+
+// Handle book update on PUT.
+exports.book_update = [
   // Convert the genre to an array.
   (req, res, next) => {
     if (!Array.isArray(req.body.genre)) {
@@ -159,6 +164,7 @@ exports.book_update_post = [
     });
 
     if (!errors.isEmpty()) {
+      // There are errors. Render form again with sanitized values/error messages.
       res.json({
         errors: errors.array(),
         book: book,
@@ -174,7 +180,8 @@ exports.book_update_post = [
   }),
 ];
 
-// Handle book delete on POST.
+
+// Handle book delete on DELETE.
 exports.book_delete = asyncHandler(async (req, res, next) => {
   // Assume the post has valid id (ie no validation/sanitization).
   const [book, bookInstances] = await Promise.all([
@@ -194,6 +201,7 @@ exports.book_delete = asyncHandler(async (req, res, next) => {
     const err = new Error("Delete Bookinstances first.");
     err.status = 400;
     return next(err);
+
   } else {
     // Book has no BookInstance objects. Delete object and redirect to the list of books.
     await Book.findByIdAndDelete(req.params.id);
@@ -201,16 +209,20 @@ exports.book_delete = asyncHandler(async (req, res, next) => {
   }
 });
 
+
 // Display book create form on GET.
 exports.book_create_form = asyncHandler(async (req, res, next) => {
   // Get all authors and genres, which we can use for adding to our book.
+  console.log("Form");
+
   const [allAuthors, allGenres] = await Promise.all([
-    Author.find({}, "first_name family_name").sort({ family_name: 1 }).exec(),
+    Author.find().sort({ family_name: 1 }).exec(),
     Genre.find().sort({ name: 1 }).exec(),
   ]);
-
+  console.log(allAuthors);
   res.json({
     authors: allAuthors,
     genres: allGenres,
   });
 });
+ 
